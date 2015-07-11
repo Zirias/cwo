@@ -1,23 +1,12 @@
 include defs.mk
--include defaults.mk
 
-# default configuration:
-ifndef CC
+# default configuration
 CC := gcc
-endif
-
-ifndef DEBUG
-DEBUG := 0
-endif
-
-ifndef GCC32
 GCC32 := 0
-endif
-
-ifndef USELTO
 USELTO := 1
-endif
-# end default configuration
+
+# read local configuration
+-include defaults.mk
 
 CFLAGS += -fvisibility=hidden -std=c89 -Wall -Wextra -pedantic \
 	  -Wformat=2 -Winit-self -Wshadow -Wbad-function-cast \

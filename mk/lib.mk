@@ -24,7 +24,7 @@ endif
 $(P)%.d: $(P)%.c Makefile conf.mk
 	$(VDEP)
 	$(VR)$(CCDEP) -MT"$@ $(@:.d=.o) $(@:.d=_s.o)" -MF$@ \
-	    $(lib_CFLAGS) $(CFLAGS) $(INCLUDES) $<
+	    $(CFLAGS) $(INCLUDES) $<
 
 ifneq ($(MAKECMDGOALS),clean)
 ifneq ($(MAKECMDGOALS),distclean)
