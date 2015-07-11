@@ -1,6 +1,24 @@
 include defs.mk
 -include defaults.mk
 
+# default configuration:
+ifndef CC
+CC := gcc
+endif
+
+ifndef DEBUG
+DEBUG := 0
+endif
+
+ifndef GCC32
+GCC32 := 0
+endif
+
+ifndef USELTO
+USELTO := 1
+endif
+# end default configuration
+
 CFLAGS += -fvisibility=hidden -std=c89 -Wall -Wextra -pedantic \
 	  -Wformat=2 -Winit-self -Wshadow -Wbad-function-cast \
 	  -Wwrite-strings -Wconversion
@@ -22,25 +40,22 @@ docdir := $(docbasedir)/cwo
 
 INSTALL := install
 
-ifdef GCC32
+ifneq ($(GCC32),0)
 CC := gcc -m32
 CFLAGS += -DGCC32BIT
 VTAGS += [32bit]
-else
-CC := gcc
 endif
 
-USELTO := 1
-ifdef DEBUG
-CFLAGS += -DDEBUG -g3 -O0
-VTAGS += [debug]
-else
+ifeq ($(DEBUG), 0)
 VTAGS += [release]
 CFLAGS += -g0 -O3
-ifeq ($(USELTO),1)
+ifneq ($(USELTO),0)
 CFLAGS += -flto
 LDFLAGS += -flto
 endif
+else
+CFLAGS += -DDEBUG -g3 -O0
+VTAGS += [debug]
 endif
 
 CCDEP := $(CC) -MM
@@ -106,8 +121,12 @@ distclean: clean
 	$(RMFR) $(BINDIR) $(CMDQUIET)
 
 strip: all
+ifneq ($(strip $(BINARIES)),)
 	strip --strip-all $(BINARIES)
+endif
+ifneq ($(strip $(LIBRARIES)),)
 	strip --strip-unneeded $(LIBRARIES)
+endif
 
 install: strip
 	$(INSTALL) -d $(DESTDIR)$(bindir)
