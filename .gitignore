@@ -2,6 +2,7 @@
 *.d
 *.swp
 conf.mk
+defaults.mk
 lib/*
 bin/*
 

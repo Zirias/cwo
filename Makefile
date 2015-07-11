@@ -1,4 +1,5 @@
 include defs.mk
+-include defaults.mk
 
 CFLAGS += -fvisibility=hidden -std=c89 -Wall -Wextra -pedantic \
 	  -Wformat=2 -Winit-self -Wshadow -Wbad-function-cast \
