@@ -65,8 +65,6 @@ VGENT = @echo $(EQT)   [GEN]  $@: $(VTAGS)$(EQT)
 VR := @
 endif
 
-BID := tools$(PSEP)buildid$(EXE)
-
 INCLUDES := -Iinclude
 
 all: lib bin
