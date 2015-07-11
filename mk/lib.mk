@@ -1,4 +1,4 @@
-LIBARCHIVES += $(LIBDIR)$(PSEP)$(LIBPRE)$(T).a
+LIBARCHIVES += $(LIBDIR)$(PSEP)lib$(T).a
 LIBRARIES += $(LIBDIR)$(PSEP)$(LIBPRE)$(T)$($(T)_VPRE)$(LIBSUFF)$($(T)_VSUFF)
 
 $(LIBDIR)$(PSEP)lib$(T).a: $($(T)_OBJS) | libdir
