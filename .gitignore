@@ -1,3 +1,7 @@
 *.o
+*.d
 *.swp
+conf.mk
+lib/*
+bin/*
 
