@@ -1,7 +1,7 @@
 #include "utils.h"
 #include "errors.h"
 
-int
+SOLOCAL int
 cwoint_alloc(void *ptr_object, size_t size)
 {
     void **object = ptr_object;
