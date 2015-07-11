@@ -13,7 +13,7 @@ cwoint_alloc(void *ptr_object, size_t size)
 
     if (!object)
     {
-	return CWOERR_NULL;
+	return CWOERR_NULLARG;
     }
 
     *object = malloc(size);
