@@ -9,7 +9,7 @@ $(LIBDIR)$(PSEP)$(LIBPRE)$(T)$($(T)_VPRE)$(LIBSUFF)$($(T)_VSUFF): \
     $($(T)_SOBJS) | libdir
 	$(VLD)
 	$(VR)$(CC) -shared \
-	    -Wl,-soname,$(LIBPRE)cwo$($(T)_VPRE)$(LIBSUFF)$($(T)_VSS) \
+	    -Wl,-soname,$(LIBPRE)$(T)$($(T)_VPRE)$(LIBSUFF)$($(T)_VSS) \
 	    -o$@ $(LDFLAGS) $^
 
 $(P)%.d: $(P)%.c Makefile conf.mk
