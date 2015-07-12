@@ -59,7 +59,7 @@ cwoint_hashtbl_create(cwoint_hashtbl **self, enum cwoint_hashtbl_size size,
 {
     int err = CWO_SUCCESS;
 
-    if (size < 0 || size >= CWOINT_HASHTBL_NUMSIZES)
+    if ((int)size < 0 || size >= CWOINT_HASHTBL_NUMSIZES)
     {
 	return CWOIERR_HTSIZE;
     }
