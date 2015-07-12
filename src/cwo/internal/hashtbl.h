@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-enum cwoint_hashtbl_size
+enum cwoint_HashtblSize
 {
     CWOINT_HASHTBL_16,
     CWOINT_HASHTBL_64,
@@ -12,28 +12,28 @@ enum cwoint_hashtbl_size
     CWOINT_HASHTBL_NUMSIZES
 };
 
-typedef void (*cwoint_hashtbl_destroy_element)(void *element);
+typedef void (*cwoint_Hashtbl_destroyElement)(void *element);
 
-struct cwoint_hashtbl_s;
-typedef struct cwoint_hashtbl_s cwoint_hashtbl;
+struct cwoint_Hashtbl_s;
+typedef struct cwoint_Hashtbl_s cwoint_Hashtbl;
 
 int
-cwoint_hashtbl_create(cwoint_hashtbl **self, enum cwoint_hashtbl_size size,
-	cwoint_hashtbl_destroy_element elementDtor);
+cwoint_Hashtbl_create(cwoint_Hashtbl **self, enum cwoint_HashtblSize size,
+	cwoint_Hashtbl_destroyElement elementDtor);
 
 void
-cwoint_hashtbl_destroy(cwoint_hashtbl *self);
+cwoint_Hashtbl_destroy(cwoint_Hashtbl *self);
 
 int
-cwoint_hashtbl_insert(cwoint_hashtbl *self,
+cwoint_Hashtbl_insert(cwoint_Hashtbl *self,
 	const void *key, size_t keyLen, void *element);
 
 void *
-cwoint_hashtbl_get(const cwoint_hashtbl *self,
+cwoint_Hashtbl_get(const cwoint_Hashtbl *self,
 	const void *key, size_t keyLen);
 
 int
-cwoint_hashtbl_remove(cwoint_hashtbl *self, const void *key, size_t keyLen);
+cwoint_Hashtbl_remove(cwoint_Hashtbl *self, const void *key, size_t keyLen);
 
 #endif
 

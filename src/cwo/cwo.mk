@@ -3,7 +3,7 @@ include src$(PSEP)cwo$(PSEP)versions.mk
 
 P:= src$(PSEP)cwo$(PSEP)
 
-cwo_OBJS := $(cwo_OBJS)
+cwo_OBJS := $(cwo_OBJS) $(P)object.o $(P)type.o
 cwo_SOURCES := $(cwo_OBJS:.o=.c)
 cwo_SOBJS := $(cwo_OBJS:.o=_s.o)
 

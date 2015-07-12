@@ -18,9 +18,9 @@ struct tblsize
     const unsigned int hashmask;
 };
 
-struct cwoint_hashtbl_s
+struct cwoint_Hashtbl_s
 {
-    cwoint_hashtbl_destroy_element elementDtor;
+    cwoint_Hashtbl_destroyElement elementDtor;
     const struct tblsize *size;
     struct entry** entries;
 };
@@ -54,8 +54,8 @@ entryHasKey(const struct entry *entry, const void *key, size_t keyLen)
 }
 
 int
-cwoint_hashtbl_create(cwoint_hashtbl **self, enum cwoint_hashtbl_size size,
-	cwoint_hashtbl_destroy_element elementDtor)
+cwoint_Hashtbl_create(cwoint_Hashtbl **self, enum cwoint_HashtblSize size,
+	cwoint_Hashtbl_destroyElement elementDtor)
 {
     int err = CWO_SUCCESS;
 
@@ -64,7 +64,7 @@ cwoint_hashtbl_create(cwoint_hashtbl **self, enum cwoint_hashtbl_size size,
 	return CWOIERR_HTSIZE;
     }
 
-    err = cwoint_alloc(self, sizeof(struct cwoint_hashtbl_s) - 1
+    err = cwoint_alloc(self, sizeof(struct cwoint_Hashtbl_s) - 1
 	    + tblsizes[size].entries * sizeof(struct entry *));
     if (err) return err;
 
@@ -76,7 +76,7 @@ cwoint_hashtbl_create(cwoint_hashtbl **self, enum cwoint_hashtbl_size size,
 }
 
 void
-cwoint_hashtbl_destroy(cwoint_hashtbl *self)
+cwoint_Hashtbl_destroy(cwoint_Hashtbl *self)
 {
     struct entry *current, *last;
     size_t i;
@@ -98,7 +98,7 @@ cwoint_hashtbl_destroy(cwoint_hashtbl *self)
 }
 
 int
-cwoint_hashtbl_insert(cwoint_hashtbl *self, const void *key,
+cwoint_Hashtbl_insert(cwoint_Hashtbl *self, const void *key,
 	size_t keyLen, void *element)
 {
     struct entry *current;
@@ -135,7 +135,7 @@ cwoint_hashtbl_insert(cwoint_hashtbl *self, const void *key,
 }
 
 void *
-cwoint_hashtbl_get(const cwoint_hashtbl *self, const void *key, size_t keyLen)
+cwoint_Hashtbl_get(const cwoint_Hashtbl *self, const void *key, size_t keyLen)
 {
     unsigned int pos = hash(key, keyLen, self->size->hashmask);
     struct entry *current = self->entries[pos];
@@ -148,7 +148,7 @@ cwoint_hashtbl_get(const cwoint_hashtbl *self, const void *key, size_t keyLen)
 }
 
 int
-cwoint_hashtbl_remove(cwoint_hashtbl *self, const void *key, size_t keyLen)
+cwoint_Hashtbl_remove(cwoint_Hashtbl *self, const void *key, size_t keyLen)
 { 
     struct entry *current, *last;
     unsigned int pos = hash(key, keyLen, self->size->hashmask);
