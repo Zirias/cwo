@@ -57,7 +57,6 @@ VDEP :=
 VLD :=
 VAR :=
 VCCLD :=
-VLNK :=
 VGEN :=
 VGENT :=
 VR :=
@@ -67,7 +66,6 @@ VDEP = @echo $(EQT)   [DEP]  $@$(EQT)
 VLD = @echo $(EQT)   [LD]   $@$(EQT)
 VAR = @echo $(EQT)   [AR]   $@$(EQT)
 VCCLD = @echo $(EQT)   [CCLD] $@$(EQT)
-VLNK = @echo $(EQT)   [LNK]  $@$(EQT)
 VGEN = @echo $(EQT)   [GEN]  $@$(EQT)
 VGENT = @echo $(EQT)   [GEN]  $@: $(VTAGS)$(EQT)
 VR := @
@@ -119,14 +117,30 @@ ifneq ($(strip $(LIBRARIES)),)
 endif
 
 install: strip
+ifneq ($(strip $(BINARIES)),)
 	$(INSTALL) -d $(DESTDIR)$(bindir)
+	$(INSTALL) $(BINARIES) $(DESTDIR)$(bindir)
+endif
+ifneq ($(strip $(LIBRARIES)$(LIBARCHIVES)),)
 	$(INSTALL) -d $(DESTDIR)$(libdir)
+endif
+ifneq ($(strip $(LIBRARIES)),)
+	$(INSTALL) $(LIBRARIES) $(DESTDIR)$(libdir)
+endif
+ifneq ($(strip $(LIBARCHIVES)),)
+	$(INSTALL) $(LIBARCHIVES) $(DESTDIR)$(libdir)
+endif
 	$(INSTALL) -d $(DESTDIR)$(includedir)
 	$(INSTALL) -d $(DESTDIR)$(docdir)
-	$(INSTALL) $(BINARIES) $(DESTDIR)$(bindir)
-	$(INSTALL) $(LIBARCHIVES) $(DESTDIR)$(libdir)
-	$(INSTALL) $(LIBRARIES) $(DESTDIR)$(libdir)
 	$(INSTALL) -m644 include/cwo/*.h $(DESTDIR)$(includedir)
+ifeq ($(PLATFORM),posix)
+ifneq ($(strip $(LIBRARIES)),)
+	@echo
+	@echo $(EQT)*** Attention ***$(EQT)
+	@echo $(EQT) Dynamic libraries were installed on your system.$(EQT)
+	@echo $(EQT) You should run /sbin/ldconfig to make them available.$(EQT)
+endif
+endif
 
 bindir:
 	$(VR)$(MDP) $(BINDIR) $(CMDQUIET)

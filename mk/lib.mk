@@ -12,15 +12,6 @@ $(LIBDIR)$(PSEP)$(LIBPRE)$(T)$($(T)_VPRE)$(LIBSUFF)$($(T)_VSUFF): \
 	    -Wl,-soname,$(LIBPRE)$(T)$($(T)_VPRE)$(LIBSUFF)$($(T)_VSS) \
 	    -o$@ $(LDFLAGS) $^
 
-ifeq ($(PLATFORM),posix)
-LIBRARIES += $(LIBDIR)$(PSEP)$(LIBPRE)$(T)$($(T)_VPRE)$(LIBSUFF)$($(T)_VSS)
-$(LIBDIR)$(PSEP)$(LIBPRE)$(T)$($(T)_VPRE)$(LIBSUFF)$($(T)_VSS): \
-    $(LIBDIR)$(PSEP)$(LIBPRE)$(T)$($(T)_VPRE)$(LIBSUFF)$($(T)_VSUFF)
-	$(VLNK)
-	$(VR)ln -s $(LIBPRE)$(T)$($(T)_VPRE)$(LIBSUFF)$($(T)_VSUFF) $@
-endif
-
-
 $(P)%.d: $(P)%.c Makefile conf.mk
 	$(VDEP)
 	$(VR)$(CCDEP) -MT"$@ $(@:.d=.o) $(@:.d=_s.o)" -MF$@ \
