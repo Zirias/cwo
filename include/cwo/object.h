@@ -16,9 +16,12 @@ struct cwo_Object_s
     const cwo_Object * const base;
 };
 
+DECLEXPORT const cwo_Object *
+cwo_Object_instance(void);
+
 DECLEXPORT int
 cwo_Object_create(void *self_ptr, size_t size,
-	const cwo_Type *type, void *base);
+	const cwo_Type *type, const void *base);
 
 DECLEXPORT int
 cwo_Object_typeOf(void *self, const cwo_Type **type);
@@ -28,9 +31,10 @@ cwo_Object_destroy(void *self);
 
 #ifdef CWO_NSIMPORT
 #define Object cwo_Object
-#define Object_create(s,sz,t,b) cwo_Object_create(s,sz,t,b)
-#define Object_typeOf(s) cwo_Object_typeOf(s)
-#define Object_destroy(s) cwo_Object_destroy(s)
+#define Object_instance cwo_Object_instance
+#define Object_create cwo_Object_create
+#define Object_typeOf cwo_Object_typeOf
+#define Object_destroy cwo_Object_destroy
 #endif
 
 #endif

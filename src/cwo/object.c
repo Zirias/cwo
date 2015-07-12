@@ -14,6 +14,8 @@ struct cwo_MutableObject_s
     const cwo_Object *base;
 };
 
+static cwo_Object instance = { MAGIC, 0, 0 };
+
 SOLOCAL int
 cwo_Object_createEmpty(void *self_ptr, size_t size)
 {
@@ -57,7 +59,7 @@ cwo_Object_setBase(void *self, void *base)
 
 SOEXPORT int
 cwo_Object_create(void *self_ptr, size_t size,
-	const cwo_Type *type, void *base)
+	const cwo_Type *type, const void *base)
 {
     int err;
     struct cwo_MutableObject_s *mo;
@@ -71,6 +73,12 @@ cwo_Object_create(void *self_ptr, size_t size,
     mo->base = base;
     *(void **)self_ptr = mo;
     return CWO_SUCCESS;
+}
+
+SOEXPORT const cwo_Object *
+cwo_Object_instance(void)
+{
+    return &instance;
 }
 
 SOEXPORT int
