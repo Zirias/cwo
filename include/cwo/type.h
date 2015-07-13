@@ -44,6 +44,9 @@ cwo_Type_register(const cwo_Type **type,
 	const cwo_Type *base,
 	const cwo_TypeDescriptor *overrides);
 
+DECLEXPORT const cwo_Type *
+cwo_Type_getBase(const cwo_Type *self);
+
 DECLEXPORT int
 cwo_Type_destroyInstance(const cwo_Type *self, void *instance);
 
@@ -62,6 +65,7 @@ cwo_Type_destroyInstance(const cwo_Type *self, void *instance);
 #define Property_create cwo_Property_create
 #define Property_destroy cwo_Property_destroy
 #define Type_register cwo_Type_register
+#define Type_getBase cwo_Type_getBase
 #define Type_destroyInstance cwo_Type_destroyInstance
 #endif
 

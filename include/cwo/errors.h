@@ -3,12 +3,13 @@
 
 #define CWO_SUCCESS 0
 
-#define CWOERR_NOMEM -1	    /* out of memory */
-#define CWOERR_NOENT -2	    /* entry not found */
-#define CWOERR_INVARG -3    /* invalid argument */
-#define CWOERR_NULLARG -4   /* null argument */
-#define CWOERR_INCARG -5    /* incompatible type of argument */
-#define CWOERR_NOTIMP -6    /* not implemented */
+#define CWOERR_BUG -1	    /* unknown error, probably a bug */
+#define CWOERR_NOMEM -2	    /* out of memory */
+#define CWOERR_NOENT -3	    /* entry not found */
+#define CWOERR_INVARG -4    /* invalid argument */
+#define CWOERR_NULLARG -5   /* null argument */
+#define CWOERR_INCARG -6    /* incompatible type of argument */
+#define CWOERR_NOTIMP -7    /* not implemented */
 
 #endif
 

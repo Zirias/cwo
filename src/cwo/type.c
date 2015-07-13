@@ -155,20 +155,58 @@ cwo_Method_call(cwo_Method *self, void *object, ...)
     if (!cwo_Object_isObject(object)) return CWOERR_INVARG;
 
     va_start(ap, object);
-    for (i = 0; i < numArgs; ++i)
+    for (i = 0; i < self->numArgs; ++i)
     {
 	argObj = va_arg(ap, void *);
-	if (!cwo_Object_isA(argObj, self->argTypes[i])) return CWOERR_INCARG;
+	if (!cwo_Object_isInstanceOf(argObj, self->argTypes[i]))
+	{
+	    return CWOERR_INCARG;
+	}
 	arg[i] = argObj;
     }
     va_end(ap);
 
+    /* UGLY hack ... whatever ... nothing to see here */
     switch (self->numArgs)
     {
 	case 0: return self->call(object);
 	case 1: return self->call(object, arg[0]);
 	case 2: return self->call(object, arg[0], arg[1]);
+	case 3: return self->call(object, arg[0], arg[1], arg[2]);
+	case 4: return self->call(object, arg[0], arg[1], arg[2], arg[3]);
+	case 5: return self->call(object, arg[0], arg[1], arg[2], arg[3],
+			 arg[4]);
+	case 6: return self->call(object, arg[0], arg[1], arg[2], arg[3],
+			 arg[4], arg[5]);
+	case 7: return self->call(object, arg[0], arg[1], arg[2], arg[3],
+			 arg[4], arg[5], arg[6]);
+	case 8: return self->call(object, arg[0], arg[1], arg[2], arg[3],
+			 arg[4], arg[5], arg[6], arg[7]);
+	case 9: return self->call(object, arg[0], arg[1], arg[2], arg[3],
+			 arg[4], arg[5], arg[6], arg[7], arg[8]);
+	case 10: return self->call(object, arg[0], arg[1], arg[2], arg[3],
+			 arg[4], arg[5], arg[6], arg[7], arg[8], arg[9]);
+	case 11: return self->call(object, arg[0], arg[1], arg[2], arg[3],
+			 arg[4], arg[5], arg[6], arg[7], arg[8], arg[9],
+			 arg[10]);
+	case 12: return self->call(object, arg[0], arg[1], arg[2], arg[3],
+			 arg[4], arg[5], arg[6], arg[7], arg[8], arg[9],
+			 arg[10], arg[11]);
+	case 13: return self->call(object, arg[0], arg[1], arg[2], arg[3],
+			 arg[4], arg[5], arg[6], arg[7], arg[8], arg[9],
+			 arg[10], arg[11], arg[12]);
+	case 14: return self->call(object, arg[0], arg[1], arg[2], arg[3],
+			 arg[4], arg[5], arg[6], arg[7], arg[8], arg[9],
+			 arg[10], arg[11], arg[12], arg[13]);
+	case 15: return self->call(object, arg[0], arg[1], arg[2], arg[3],
+			 arg[4], arg[5], arg[6], arg[7], arg[8], arg[9],
+			 arg[10], arg[11], arg[12], arg[13], arg[14]);
+	case 16: return self->call(object, arg[0], arg[1], arg[2], arg[3],
+			 arg[4], arg[5], arg[6], arg[7], arg[8], arg[9],
+			 arg[10], arg[11], arg[12], arg[13], arg[14], arg[15]);
     }
+
+    return CWOERR_BUG;
 }
 
 SOEXPORT void
@@ -233,6 +271,12 @@ cwo_Type_register(const cwo_Type **type, const cwo_String *name,
 		const cwo_Type *base, const cwo_TypeDescriptor *overrides)
 {
     return CWOERR_NOTIMP;
+}
+
+SOEXPORT const cwo_Type *
+cwo_Type_getBase(const cwo_Type *self)
+{
+    return self->base;
 }
 
 SOEXPORT int

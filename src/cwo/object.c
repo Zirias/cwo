@@ -12,9 +12,10 @@ struct cwo_MutableObject_s
     char magic[4];
     const cwo_Type *type;
     const cwo_Object *base;
+    size_t size;
 };
 
-static cwo_Object instance = { MAGIC, 0, 0 };
+static cwo_Object instance = { MAGIC, 0, 0, sizeof(cwo_Object) };
 
 SOLOCAL int
 cwo_Object_createEmpty(void *self_ptr, size_t size)
@@ -28,6 +29,7 @@ cwo_Object_createEmpty(void *self_ptr, size_t size)
     if (err) return err;
     memset(&mo, 0, size);
     memcpy(&mo, MAGIC, 4);
+    mo->size = size;
 
     *(void **)self_ptr = mo;
     return CWO_SUCCESS;
@@ -75,6 +77,23 @@ cwo_Object_create(void *self_ptr, size_t size,
     return CWO_SUCCESS;
 }
 
+SOEXPORT int
+cwo_Object_clone(void *self, void *clone_ptr)
+{
+    int err;
+    cwo_Object *o = self;
+    void **clone = clone_ptr;
+
+    if (!o || !clone) return CWOERR_NULLARG;
+    if (strncmp(o->magic, MAGIC, 4)) return CWOERR_INVARG;
+
+    err = cwoint_alloc(clone, o->size);
+    if (err) return err;
+
+    memcpy(*clone, o, o->size);
+    return CWO_SUCCESS;
+}
+
 SOEXPORT const cwo_Object *
 cwo_Object_instance(void)
 {
@@ -93,7 +112,7 @@ cwo_Object_isObject(void *self)
 }
 
 SOEXPORT int
-cwo_Object_isA(void *self, const cwo_Type *type)
+cwo_Object_isInstanceOf(void *self, const cwo_Type *type)
 {
     const cwo_Type *objType;
     int err;
