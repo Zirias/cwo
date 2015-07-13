@@ -27,8 +27,8 @@ cwo_Object_createEmpty(void *self_ptr, size_t size)
 
     err = cwoint_alloc(&mo, size);
     if (err) return err;
-    memset(&mo, 0, size);
-    memcpy(&mo, MAGIC, 4);
+    memset(mo, 0, size);
+    memcpy(mo, MAGIC, 4);
     mo->size = size;
 
     *(void **)self_ptr = mo;

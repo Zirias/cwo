@@ -5,4 +5,5 @@ conf.mk
 defaults.mk
 lib/*
 bin/*
+test/*
 

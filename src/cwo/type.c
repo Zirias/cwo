@@ -10,7 +10,7 @@
 struct cwo_Method_s
 {
     cwo_Object object;
-    const cwo_String *name;
+    cwo_String *name;
     cwo_MethodCall call;
     int numArgs;
     const cwo_Type *argTypes[1];
@@ -19,7 +19,7 @@ struct cwo_Method_s
 struct cwo_Property_s
 {
     cwo_Object object;
-    const cwo_String *name;
+    cwo_String *name;
     cwo_PropertyGet get;
     cwo_PropertySet set;
     const cwo_Type *type;
@@ -38,7 +38,7 @@ struct cwo_Type_s
 {
     cwo_Object object;
     cwo_String *name;
-    cwo_Type *base;
+    const cwo_Type *base;
     cwo_TypeDescriptor *desc;
 };
 
@@ -59,12 +59,15 @@ destroyType(void *type)
 
     if (!t) return;
 
+    if (t->name) cwo_String_destroy(t->name);
+    if (t->desc) cwo_TypeDescriptor_destroy(t->desc);
+
     free(t);
 }
 
 /* bootstrap type system */
-static int
-init(void)
+SOLOCAL int
+cwo_Type_bootstrap(void)
 {
     int err;
     cwo_Type *lt_object = 0;
@@ -77,6 +80,7 @@ init(void)
     cwo_Method *method = 0;
     cwo_Property *property = 0;
     cwo_String *tmp = 0;
+    const char *tname;
 
     err = cwoint_Hashtbl_create(&types, CWOINT_HASHTBL_256, &destroyType);
     if (err) return err;
@@ -149,6 +153,12 @@ init(void)
     err = cwo_String_create(&(lt_string->name), "cwo_String");
     if (err) goto s_c_type_init_fail;
 
+    /* set our local types */
+    t_method = lt_method;
+    t_property = lt_property;
+    t_typeDescriptor = lt_typeDescriptor;
+    t_type = lt_type;
+
     /* descriptors for types */
     err = cwo_TypeDescriptor_create(&desc);
     if (err) goto s_c_type_init_fail;
@@ -173,30 +183,59 @@ init(void)
     lt_object->desc = desc;
     desc = 0;
 
-    /* set our local types */
-    t_method = lt_method;
-    t_property = lt_property;
-    t_typeDescriptor = lt_typeDescriptor;
-    t_type = lt_type;
+    /* register core types */
+    tname = cwo_String_cstr(lt_object->name);
+    err = cwoint_Hashtbl_insert(types, tname, strlen(tname), lt_object);
+    if (err) goto s_c_type_init_failobject;
+    tname = cwo_String_cstr(lt_type->name);
+    err = cwoint_Hashtbl_insert(types, tname, strlen(tname), lt_type);
+    if (err) goto s_c_type_init_failtype;
+    tname = cwo_String_cstr(lt_typeDescriptor->name);
+    err = cwoint_Hashtbl_insert(types, tname, strlen(tname), lt_typeDescriptor);
+    if (err) goto s_c_type_init_failtypedescriptor;
+    tname = cwo_String_cstr(lt_method->name);
+    err = cwoint_Hashtbl_insert(types, tname, strlen(tname), lt_method);
+    if (err) goto s_c_type_init_failmethod;
+    tname = cwo_String_cstr(lt_property->name);
+    err = cwoint_Hashtbl_insert(types, tname, strlen(tname), lt_property);
+    if (err) goto s_c_type_init_failproperty;
+    tname = cwo_String_cstr(lt_string->name);
+    err = cwoint_Hashtbl_insert(types, tname, strlen(tname), lt_string);
+    if (err) goto s_c_type_init_failstring;
+
+    return CWO_SUCCESS;
 
 s_c_type_init_fail:
     cwo_String_destroy(tmp);
     cwo_Method_destroy(method);
     cwo_Property_destroy(property);
     cwo_TypeDescriptor_destroy(desc);
-    destroyType(lt_string);
-    destroyType(lt_property);
-    destroyType(lt_method);
-    destroyType(lt_typeDescriptor);
-    destroyType(lt_type);
+s_c_type_init_failobject:
     destroyType(lt_object);
+s_c_type_init_failtype:
+    destroyType(lt_type);
+s_c_type_init_failtypedescriptor:
+    destroyType(lt_typeDescriptor);
+s_c_type_init_failmethod:
+    destroyType(lt_method);
+s_c_type_init_failproperty:
+    destroyType(lt_property);
+s_c_type_init_failstring:
+    destroyType(lt_string);
     cwoint_Hashtbl_destroy(types);
     types = 0;
     return err;
 }
 
+SOLOCAL void
+cwo_Type_cleanup(void)
+{
+    cwoint_Hashtbl_destroy(types);
+    types = 0;
+}
+
 SOEXPORT int
-cwo_Method_create(cwo_Method **self, const cwo_String *name,
+cwo_Method_create(cwo_Method **self, cwo_String *name,
 	cwo_MethodCall call, int numArgs, ...)
 {
     va_list ap;
@@ -293,11 +332,12 @@ cwo_Method_call(cwo_Method *self, void *object, ...)
 SOEXPORT void
 cwo_Method_destroy(cwo_Method *self)
 {
+    cwo_String_destroy(self->name);
     free(self);
 }
 
 SOEXPORT int
-cwo_Property_create(cwo_Property **self, const cwo_String *name,
+cwo_Property_create(cwo_Property **self, cwo_String *name,
 	const cwo_Type *type, cwo_PropertyGet get, cwo_PropertySet set)
 {
     int err;
@@ -319,6 +359,7 @@ cwo_Property_create(cwo_Property **self, const cwo_String *name,
 SOEXPORT void
 cwo_Property_destroy(cwo_Property *self)
 {
+    cwo_String_destroy(self->name);
     free(self);
 }
 
@@ -356,6 +397,14 @@ cwo_TypeDescriptor_addMethod(cwo_TypeDescriptor *self, cwo_Method *method)
 SOEXPORT int
 cwo_TypeDescriptor_addProperty(cwo_TypeDescriptor *self, cwo_Property *property)
 {
+    cwo_Property *tmp;
+    const char *name = cwo_String_cstr(property->name);
+
+    tmp = cwoint_Hashtbl_get(self->properties, name, strlen(name));
+    if (tmp) return CWOERR_EXISTS;
+
+    return cwoint_Hashtbl_insert(
+	    self->properties, name, strlen(name), property);
 }
 
 SOEXPORT void
@@ -367,10 +416,31 @@ cwo_TypeDescriptor_destroy(cwo_TypeDescriptor *self)
 }
 
 SOEXPORT int
-cwo_Type_register(const cwo_Type **type, const cwo_String *name,
-		const cwo_Type *base, const cwo_TypeDescriptor *overrides)
+cwo_Type_register(const cwo_Type **type, cwo_String *name,
+		const cwo_Type *base, cwo_TypeDescriptor *desc)
 {
-    return CWOERR_NOTIMP;
+    int err;
+    cwo_Type *t;
+    const char *rawName;
+
+    err = cwo_Object_create(&t, sizeof(cwo_Type),
+	    t_type, cwo_Object_instance());
+    if (err) return err;
+
+    t->name = name;
+    t->base = base;
+    t->desc = desc;
+
+    rawName = cwo_String_cstr(name);
+    err = cwoint_Hashtbl_insert(types, rawName, strlen(rawName), t);
+    if (err)
+    {
+	destroyType(t);
+	return err;
+    }
+
+    *type = t;
+    return CWO_SUCCESS;
 }
 
 SOEXPORT const cwo_String *
@@ -390,4 +460,5 @@ cwo_Type_destroyInstance(const cwo_Type *self, void *instance)
 {
     return CWOERR_NOTIMP;
 }
+
 

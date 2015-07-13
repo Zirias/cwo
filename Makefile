@@ -14,6 +14,7 @@ CFLAGS += -fvisibility=hidden -std=c89 -Wall -Wextra -pedantic \
 	  -Wwrite-strings -Wconversion
 
 BINDIR := bin
+TESTDIR := test
 LIBDIR := lib
 
 VTAGS :=
@@ -77,6 +78,10 @@ INCLUDES := -Iinclude
 
 all: lib bin
 
+ifneq ($(DEBUG),0)
+all: test
+endif
+
 ifneq ($(MAKECMDGOALS),clean)
 ifneq ($(MAKECMDGOALS),distclean)
 conf.mk:
@@ -94,11 +99,16 @@ endif
 endif
 endif
 
+include mk$(PSEP)lib.mk
+include mk$(PSEP)test.mk
+
 include src$(PSEP)src.mk
 
 bin: $(BINARIES)
 
 lib: $(LIBRARIES) $(LIBARCHIVES)
+
+test: $(TESTS)
 
 clean:
 	$(RMF) $(SOURCES:.c=.o)
@@ -109,6 +119,7 @@ distclean: clean
 	$(RMF) conf.mk
 	$(RMFR) $(LIBDIR) $(CMDQUIET)
 	$(RMFR) $(BINDIR) $(CMDQUIET)
+	$(RMFR) $(TESTDIR) $(CMDQUIET)
 
 strip: all
 ifneq ($(strip $(BINARIES)),)
@@ -144,13 +155,22 @@ ifneq ($(strip $(LIBRARIES)),)
 endif
 endif
 
-bindir:
+$(BINDIR)$(PSEP):
 	$(VR)$(MDP) $(BINDIR) $(CMDQUIET)
 
-libdir:
+$(LIBDIR)$(PSEP):
 	$(VR)$(MDP) $(LIBDIR) $(CMDQUIET)
 
-.PHONY: all lib bin strip clean distclean install
+$(TESTDIR)$(PSEP):
+	$(VR)$(MDP) $(TESTDIR) $(CMDQUIET)
+
+bindir: $(BINDIR)$(PSEP)
+
+libdir: $(LIBDIR)$(PSEP)
+
+testdir: $(TESTDIR)$(PSEP)
+
+.PHONY: all bin lib test bindir libdir testdir strip clean distclean install
 .SUFFIXES:
 
 # vim: noet:si:ts=8:sts=8:sw=8

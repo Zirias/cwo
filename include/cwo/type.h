@@ -26,14 +26,14 @@ typedef struct cwo_Type_s cwo_Type;
 DECLEXPORT const cwo_Type * const cwo_GenericType;
 
 DECLEXPORT int
-cwo_Method_create(cwo_Method **self, const cwo_String *name,
+cwo_Method_create(cwo_Method **self, cwo_String *name,
 		cwo_MethodCall call, int numArgs, ...);
 
 DECLEXPORT void
 cwo_Method_destroy(cwo_Method *self);
 
 DECLEXPORT int
-cwo_Property_create(cwo_Property **self, const cwo_String *name,
+cwo_Property_create(cwo_Property **self, cwo_String *name,
 		const cwo_Type *type,
 		cwo_PropertyGet get, cwo_PropertySet set);
 
@@ -55,9 +55,9 @@ cwo_TypeDescriptor_destroy(cwo_TypeDescriptor *self);
 
 DECLEXPORT int
 cwo_Type_register(const cwo_Type **type,
-	const cwo_String *name,
+	cwo_String *name,
 	const cwo_Type *base,
-	const cwo_TypeDescriptor *overrides);
+	cwo_TypeDescriptor *desc);
 
 DECLEXPORT const cwo_String *
 cwo_Type_getName(const cwo_Type *self);

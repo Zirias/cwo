@@ -22,7 +22,7 @@ struct cwoint_Hashtbl_s
 {
     cwoint_Hashtbl_destroyElement elementDtor;
     const struct tblsize *size;
-    struct entry** entries;
+    struct entry* entries[1];
 };
 
 static const struct tblsize tblsizes[CWOINT_HASHTBL_NUMSIZES] = {
@@ -64,11 +64,12 @@ cwoint_Hashtbl_create(cwoint_Hashtbl **self, enum cwoint_HashtblSize size,
 	return CWOIERR_HTSIZE;
     }
 
-    err = cwoint_alloc(self, sizeof(struct cwoint_Hashtbl_s) - 1
-	    + tblsizes[size].entries * sizeof(struct entry *));
+    err = cwoint_alloc(self, sizeof(struct cwoint_Hashtbl_s)
+	    + (tblsizes[size].entries-1) * sizeof(struct entry *));
     if (err) return err;
 
-    memset(&((*self)->entries), 0, tblsizes[size].entries);
+    memset((*self)->entries, 0,
+	    tblsizes[size].entries * sizeof(struct entry *));
     (*self)->elementDtor = elementDtor;
     (*self)->size = &(tblsizes[size]);
 
@@ -116,7 +117,7 @@ cwoint_Hashtbl_insert(cwoint_Hashtbl *self, const void *key,
 	return err;
     }
 
-    memcpy(&(myEntry->key), key, keyLen);
+    memcpy(myEntry->key, key, keyLen);
     myEntry->keyLen = keyLen;
     myEntry->element = element;
     myEntry->next = 0;
