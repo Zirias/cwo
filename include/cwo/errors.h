@@ -10,6 +10,7 @@
 #define CWOERR_NULLARG -5   /* null argument */
 #define CWOERR_INCARG -6    /* incompatible type of argument */
 #define CWOERR_NOTIMP -7    /* not implemented */
+#define CWOERR_EXISTS -8    /* entry already exists */
 
 #endif
 

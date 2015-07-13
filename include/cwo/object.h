@@ -3,6 +3,7 @@
 
 #include <cwo/common.h>
 #include <cwo/type.h>
+#include <cwo/string.h>
 
 #include <stdlib.h>
 
@@ -25,7 +26,10 @@ cwo_Object_create(void *self_ptr, size_t size,
 	const cwo_Type *type, const void *base);
 
 DECLEXPORT int
-cwo_Object_clone(void *self_ptr, void *clone_ptr);
+cwo_Object_clone(const void *self, void *clone_ptr);
+
+DECLEXPORT int
+cwo_Object_toString(void *self, cwo_String **string);
 
 DECLEXPORT int
 cwo_Object_isObject(void *self);

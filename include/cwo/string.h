@@ -16,6 +16,10 @@ cwo_String_cstr(const cwo_String *self);
 DECLEXPORT size_t
 cwo_String_len(const cwo_String *self);
 
+DECLEXPORT int
+cwo_String_appendCstr(const cwo_String *self, cwo_String **result,
+	const char *content);
+
 DECLEXPORT void
 cwo_String_destroy(cwo_String *self);
 

@@ -78,10 +78,10 @@ cwo_Object_create(void *self_ptr, size_t size,
 }
 
 SOEXPORT int
-cwo_Object_clone(void *self, void *clone_ptr)
+cwo_Object_clone(const void *self, void *clone_ptr)
 {
     int err;
-    cwo_Object *o = self;
+    const cwo_Object *o = self;
     void **clone = clone_ptr;
 
     if (!o || !clone) return CWOERR_NULLARG;
@@ -92,6 +92,17 @@ cwo_Object_clone(void *self, void *clone_ptr)
 
     memcpy(*clone, o, o->size);
     return CWO_SUCCESS;
+}
+
+SOEXPORT int
+cwo_Object_toString(void *self, cwo_String **string)
+{
+    cwo_Object *o = self;
+
+    if (!o) return CWOERR_NULLARG;
+    if (strncmp(o->magic, MAGIC, 4)) return CWOERR_INVARG;
+
+    return cwo_Object_clone(cwo_Type_getName(o->type), string);
 }
 
 SOEXPORT const cwo_Object *
@@ -116,6 +127,8 @@ cwo_Object_isInstanceOf(void *self, const cwo_Type *type)
 {
     const cwo_Type *objType;
     int err;
+
+    if (type == cwo_GenericType) return 1;
 
     if (!cwo_Object_isObject(self)) return 0;
     err = cwo_Object_typeOf(self, &objType);
