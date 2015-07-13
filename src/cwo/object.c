@@ -59,6 +59,12 @@ cwo_Object_setBase(void *self, void *base)
     return CWO_SUCCESS;
 }
 
+SOLOCAL const cwo_Type *
+cwo_Object_objectType(void)
+{
+    return instance.type;
+}
+
 SOEXPORT int
 cwo_Object_create(void *self_ptr, size_t size,
 	const cwo_Type *type, const void *base)
@@ -153,6 +159,33 @@ cwo_Object_typeOf(void *self, const cwo_Type **type)
 
     *type = o->type;
     return CWO_SUCCESS;
+}
+
+SOEXPORT int
+cwo_Object_vcall(void *self, const char *method, va_list ap)
+{
+    int err;
+    const cwo_Type *t;
+    const cwo_Method *m;
+
+    err = cwo_Object_typeOf(self, &t);
+    if (err) return err;
+
+    m = cwo_Type_getMethod(t, method);
+    if (!m) return CWOERR_NOMETH;
+
+    return cwo_Method_vcall(m, self, ap);
+}
+
+SOEXPORT int
+cwo_Object_call(void *self, const char *method, ...)
+{
+    int rc;
+    va_list ap;
+    va_start(ap, method);
+    rc = cwo_Object_vcall(self, method, ap);
+    va_end(ap);
+    return rc;
 }
 
 SOEXPORT int

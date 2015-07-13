@@ -145,7 +145,7 @@ cwoint_Hashtbl_get(const cwoint_Hashtbl *self, const void *key, size_t keyLen)
     {
 	current = current->next;
     }
-    return current;
+    return current ? current->element : 0;
 }
 
 int

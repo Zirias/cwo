@@ -4,7 +4,6 @@
 #include "internal/hashtbl.h"
 #include "internal/errors.h"
 
-#include <stdarg.h>
 #include <string.h>
 
 struct cwo_Method_s
@@ -124,6 +123,7 @@ cwo_Type_bootstrap(void)
     if (err) goto s_c_type_init_fail;
     err = cwo_String_create(&(lt_type->name), "cwo_Type");
     if (err) goto s_c_type_init_fail;
+    lt_type->base = lt_object;
 
     err = cwo_Object_setType(lt_typeDescriptor, lt_type);
     if (err) goto s_c_type_init_fail;
@@ -131,6 +131,7 @@ cwo_Type_bootstrap(void)
     if (err) goto s_c_type_init_fail;
     err = cwo_String_create(&(lt_typeDescriptor->name), "cwo_TypeDescriptor");
     if (err) goto s_c_type_init_fail;
+    lt_typeDescriptor->base = lt_object;
 
     err = cwo_Object_setType(lt_method, lt_type);
     if (err) goto s_c_type_init_fail;
@@ -138,6 +139,7 @@ cwo_Type_bootstrap(void)
     if (err) goto s_c_type_init_fail;
     err = cwo_String_create(&(lt_method->name), "cwo_Method");
     if (err) goto s_c_type_init_fail;
+    lt_method->base = lt_object;
 
     err = cwo_Object_setType(lt_property, lt_type);
     if (err) goto s_c_type_init_fail;
@@ -145,6 +147,7 @@ cwo_Type_bootstrap(void)
     if (err) goto s_c_type_init_fail;
     err = cwo_String_create(&(lt_property->name), "cwo_Property");
     if (err) goto s_c_type_init_fail;
+    lt_property->base = lt_object;
 
     err = cwo_Object_setType(lt_string, lt_type);
     if (err) goto s_c_type_init_fail;
@@ -152,6 +155,7 @@ cwo_Type_bootstrap(void)
     if (err) goto s_c_type_init_fail;
     err = cwo_String_create(&(lt_string->name), "cwo_String");
     if (err) goto s_c_type_init_fail;
+    lt_string->base = lt_object;
 
     /* set our local types */
     t_method = lt_method;
@@ -265,16 +269,14 @@ cwo_Method_create(cwo_Method **self, cwo_String *name,
 }
 
 SOEXPORT int
-cwo_Method_call(cwo_Method *self, void *object, ...)
+cwo_Method_vcall(const cwo_Method *self, void *object, va_list ap)
 {
-    va_list ap;
     int i;
     void *argObj;
     void *arg[CWO_METHOD_MAXARGS];
 
     if (!cwo_Object_isObject(object)) return CWOERR_INVARG;
 
-    va_start(ap, object);
     for (i = 0; i < self->numArgs; ++i)
     {
 	argObj = va_arg(ap, void *);
@@ -284,7 +286,6 @@ cwo_Method_call(cwo_Method *self, void *object, ...)
 	}
 	arg[i] = argObj;
     }
-    va_end(ap);
 
     /* UGLY hack ... whatever ... nothing to see here */
     switch (self->numArgs)
@@ -327,6 +328,17 @@ cwo_Method_call(cwo_Method *self, void *object, ...)
     }
 
     return CWOERR_BUG;
+}
+
+SOEXPORT int
+cwo_Method_call(const cwo_Method *self, void *object, ...)
+{
+    int rc;
+    va_list ap;
+    va_start(ap, object);
+    rc = cwo_Method_vcall(self, object, ap);
+    va_end(ap);
+    return rc;
 }
 
 SOEXPORT void
@@ -407,6 +419,12 @@ cwo_TypeDescriptor_addProperty(cwo_TypeDescriptor *self, cwo_Property *property)
 	    self->properties, name, strlen(name), property);
 }
 
+SOEXPORT const cwo_Method *
+cwo_TypeDescriptor_getMethod(const cwo_TypeDescriptor *self, const char *name)
+{
+    return cwoint_Hashtbl_get(self->methods, name, strlen(name));
+}
+
 SOEXPORT void
 cwo_TypeDescriptor_destroy(cwo_TypeDescriptor *self)
 {
@@ -422,6 +440,9 @@ cwo_Type_register(const cwo_Type **type, cwo_String *name,
     int err;
     cwo_Type *t;
     const char *rawName;
+
+    if (!name) return CWOERR_NULLARG;
+    if (!base) base = cwo_Object_objectType();
 
     err = cwo_Object_create(&t, sizeof(cwo_Type),
 	    t_type, cwo_Object_instance());
@@ -453,6 +474,23 @@ SOEXPORT const cwo_Type *
 cwo_Type_getBase(const cwo_Type *self)
 {
     return self->base;
+}
+
+SOEXPORT const cwo_Method *
+cwo_Type_getMethod(const cwo_Type *self, const char *name)
+{
+    const cwo_Method *m;
+
+    while (self)
+    {
+	if (self->desc)
+	{
+	    m = cwo_TypeDescriptor_getMethod(self->desc, name);
+	    if (m) return m;
+	}
+	self = self->base;
+    }
+    return 0;
 }
 
 SOEXPORT int

@@ -13,4 +13,6 @@ cwo_Init(void);
 DECLEXPORT void
 cwo_Done(void);
 
+#define CALL cwo_Object_call
+
 #endif

@@ -12,5 +12,8 @@ cwo_Object_setType(void *self, const cwo_Type *type);
 int
 cwo_Object_setBase(void *self, void *base);
 
+const cwo_Type *
+cwo_Object_objectType(void);
+
 #endif
 

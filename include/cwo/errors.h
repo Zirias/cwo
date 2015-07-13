@@ -11,6 +11,7 @@
 #define CWOERR_INCARG -6    /* incompatible type of argument */
 #define CWOERR_NOTIMP -7    /* not implemented */
 #define CWOERR_EXISTS -8    /* entry already exists */
+#define CWOERR_NOMETH -9    /* no such method */
 
 #endif
 

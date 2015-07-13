@@ -4,6 +4,8 @@
 #include <cwo/common.h>
 #include <cwo/string.h>
 
+#include <stdarg.h>
+
 typedef int (*cwo_MethodCall)();
 typedef void *(*cwo_PropertyGet)(void *object);
 typedef void (*cwo_PropertySet)(void *object, void *value);
@@ -29,6 +31,12 @@ DECLEXPORT int
 cwo_Method_create(cwo_Method **self, cwo_String *name,
 		cwo_MethodCall call, int numArgs, ...);
 
+DECLEXPORT int
+cwo_Method_vcall(const cwo_Method *self, void *object, va_list ap);
+
+DECLEXPORT int
+cwo_Method_call(const cwo_Method *self, void *object, ...);
+
 DECLEXPORT void
 cwo_Method_destroy(cwo_Method *self);
 
@@ -50,6 +58,9 @@ DECLEXPORT int
 cwo_TypeDescriptor_addProperty(cwo_TypeDescriptor *self,
 	cwo_Property *property);
 
+DECLEXPORT const cwo_Method *
+cwo_TypeDescriptor_getMethod(const cwo_TypeDescriptor *self, const char *name);
+
 DECLEXPORT void
 cwo_TypeDescriptor_destroy(cwo_TypeDescriptor *self);
 
@@ -64,6 +75,9 @@ cwo_Type_getName(const cwo_Type *self);
 
 DECLEXPORT const cwo_Type *
 cwo_Type_getBase(const cwo_Type *self);
+
+DECLEXPORT const cwo_Method *
+cwo_Type_getMethod(const cwo_Type *self, const char *name);
 
 DECLEXPORT int
 cwo_Type_destroyInstance(const cwo_Type *self, void *instance);
@@ -80,15 +94,19 @@ cwo_Type_destroyInstance(const cwo_Type *self, void *instance);
 #define Type cwo_Type
 #define GenericType cwo_GenericType
 #define Method_create cwo_Method_create
+#define Method_vcall cwo_Method_vcall
+#define Method_call cwo_Method_call
 #define Method_destroy cwo_Method_destroy
 #define Property_create cwo_Property_create
 #define Property_destroy cwo_Property_destroy
 #define TypeDescriptor_create cwo_TypeDescriptor_create
 #define TypeDescriptor_addMethod cwo_TypeDescriptor_addMethod
 #define TypeDescriptor_addProperty cwo_TypeDescriptor_addProperty
+#define TypeDescriptor_getMethod cwo_TypeDescriptor_getMethod
 #define TypeDescriptor_destroy cwo_TypeDescriptor_destroy
 #define Type_register cwo_Type_register
 #define Type_getBase cwo_Type_getBase
+#define Type_getMethod cwo_Type_getMethod
 #define Type_destroyInstance cwo_Type_destroyInstance
 #endif
 
