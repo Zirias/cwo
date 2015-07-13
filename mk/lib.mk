@@ -25,9 +25,10 @@ endif
 
 $(P)%.o: $(P)%.c Makefile conf.mk
 	$(VCC)
-	$(VR)$(CC) -o$@ -c $(CFLAGS) $(INCLUDES) $<
+	$(VR)$(CC) -o$@ -c $(CFLAGS) $($(T)_DEFINES) $(INCLUDES) $<
 
 $(P)%_s.o: $(P)%.c Makefile conf.mk
 	$(VCC)
-	$(VR)$(CC) -o$@ -c $(lib_CFLAGS) $(CFLAGS) $(INCLUDES) $<
+	$(VR)$(CC) -o$@ -c $(lib_CFLAGS) $($(T)_DEFINES) $(CFLAGS) \
+		$(INCLUDES) $<
 

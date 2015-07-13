@@ -9,7 +9,7 @@
 
 #ifdef WIN32
 #define SOEXPORT cwo___cdecl __declspec(dllexport)
-#ifdef BUILDING_cwo
+#ifdef BUILDING_CWO
 #define DECLEXPORT __declspec(dllexport)
 #else
 #define DECLEXPORT cwo___cdecl __declspec(dllimport)

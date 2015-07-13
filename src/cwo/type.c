@@ -1,6 +1,7 @@
 #include "type.h"
 #include "object.h"
 #include "internal/hashtbl.h"
+#include "internal/errors.h"
 
 struct cwo_Method_s
 {
@@ -95,5 +96,18 @@ s_c_type_init_fail:
     cwoint_Hashtbl_destroy(types);
     types = 0;
     return err;
+}
+
+SOEXPORT int
+cwo_Type_register(const cwo_Type **type, const cwo_String *name,
+		const cwo_Type *base, const cwo_TypeDescriptor *overrides)
+{
+    return CWOERR_NOTIMP;
+}
+
+SOEXPORT int
+cwo_Type_destroyInstance(const cwo_Type *self, void *instance)
+{
+    return CWOERR_NOTIMP;
 }
 

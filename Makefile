@@ -42,6 +42,9 @@ CFLAGS += -g0 -O3
 ifneq ($(USELTO),0)
 CFLAGS += -flto
 LDFLAGS += -flto
+AR := gcc-ar
+else
+AR := ar
 endif
 else
 CFLAGS += -DDEBUG -g3 -O0
@@ -49,7 +52,6 @@ VTAGS += [debug]
 endif
 
 CCDEP := $(CC) -MM
-AR := gcc-ar
 
 ifeq ($(V),1)
 VCC :=

@@ -12,7 +12,7 @@ endif
 
 ifeq ($(PLATFORM),win32)
 
-cwo_VPRE := -$(CWO_VMAJ)
+cwo_VPRE := -$(cwo_VMAJ)
 cwo_VSUFF :=
 cwo_VSS :=
 

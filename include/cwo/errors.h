@@ -8,6 +8,7 @@
 #define CWOERR_INVARG -3    /* invalid argument */
 #define CWOERR_NULLARG -4   /* null argument */
 #define CWOERR_INCARG -5    /* incompatible type of argument */
+#define CWOERR_NOTIMP -6    /* not implemented */
 
 #endif
 

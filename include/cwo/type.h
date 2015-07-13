@@ -16,8 +16,9 @@ typedef struct cwo_TypeDescriptor_s cwo_TypeDescriptor;
 struct cwo_Type_s;
 typedef struct cwo_Type_s cwo_Type;
 
-DECLEXPORT const cwo_Type *
-cwo_Type_register(const cwo_String *name,
+DECLEXPORT int
+cwo_Type_register(const cwo_Type **type,
+	const cwo_String *name,
 	const cwo_Type *base,
 	const cwo_TypeDescriptor *overrides);
 
