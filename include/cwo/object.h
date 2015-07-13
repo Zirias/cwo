@@ -14,6 +14,7 @@ struct cwo_Object_s
     const char magic[4];
     const cwo_Type * const type;
     const cwo_Object * const base;
+    const size_t size;
 };
 
 DECLEXPORT const cwo_Object *
@@ -22,6 +23,12 @@ cwo_Object_instance(void);
 DECLEXPORT int
 cwo_Object_create(void *self_ptr, size_t size,
 	const cwo_Type *type, const void *base);
+
+DECLEXPORT int
+cwo_Object_isObject(void *self);
+
+DECLEXPORT int
+cwo_Object_isA(void *self, const cwo_Type *type);
 
 DECLEXPORT int
 cwo_Object_typeOf(void *self, const cwo_Type **type);

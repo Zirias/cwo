@@ -1,7 +1,7 @@
 ifeq ($(OS),Windows_NT)
 
 EXE := .exe
-LIBPRE := 
+LIBPRE := lib
 LIBSUFF := .dll
 CMDSEP := &
 PSEP := \\

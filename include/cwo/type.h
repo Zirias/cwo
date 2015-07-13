@@ -9,6 +9,8 @@ typedef void *(*cwo_PropertyGet)(void *object);
 typedef void (*cwo_PropertySet)(void *object, void *value);
 typedef void (*cwo_Destructor)(void *object);
 
+#define CWO_METHOD_MAXARGS 16
+
 struct cwo_Method_s;
 typedef struct cwo_Method_s cwo_Method;
 
@@ -49,6 +51,7 @@ cwo_Type_destroyInstance(const cwo_Type *self, void *instance);
 #define MethodCall cwo_MethodCall
 #define PropertyGet cwo_PropertyGet
 #define PropertySet cwo_PropertySet
+#define METHOD_MAXARGS CWO_METHOD_MAXARGS
 #define Destructor cwo_Destructor
 #define Method cwo_Method
 #define Property cwo_Property

@@ -123,7 +123,7 @@ cwo_Method_create(cwo_Method **self, const cwo_String *name,
     int err;
     int i;
 
-    if (numArgs < 0) return CWOERR_INVARG;
+    if (numArgs < 0 || numArgs > CWO_METHOD_MAXARGS) return CWOERR_INVARG;
 
     err = cwo_Object_create(self, sizeof(cwo_Method) - sizeof(cwo_Type *)
 	    + (size_t)numArgs * sizeof(cwo_Type *),
@@ -142,6 +142,33 @@ cwo_Method_create(cwo_Method **self, const cwo_String *name,
     va_end(ap);
 
     return CWO_SUCCESS;
+}
+
+SOEXPORT int
+cwo_Method_call(cwo_Method *self, void *object, ...)
+{
+    va_list ap;
+    int i;
+    void *argObj;
+    void *arg[CWO_METHOD_MAXARGS];
+
+    if (!cwo_Object_isObject(object)) return CWOERR_INVARG;
+
+    va_start(ap, object);
+    for (i = 0; i < numArgs; ++i)
+    {
+	argObj = va_arg(ap, void *);
+	if (!cwo_Object_isA(argObj, self->argTypes[i])) return CWOERR_INCARG;
+	arg[i] = argObj;
+    }
+    va_end(ap);
+
+    switch (self->numArgs)
+    {
+	case 0: return self->call(object);
+	case 1: return self->call(object, arg[0]);
+	case 2: return self->call(object, arg[0], arg[1]);
+    }
 }
 
 SOEXPORT void
@@ -191,6 +218,14 @@ cwo_TypeDescriptor_create(cwo_TypeDescriptor **self)
     if (err) return err;
 
     return CWO_SUCCESS;
+}
+
+SOEXPORT void
+cwo_TypeDescriptor_destroy(cwo_TypeDescriptor *self)
+{
+    cwoint_Hashtbl_destroy(self->properties);
+    cwoint_Hashtbl_destroy(self->methods);
+    free(self);
 }
 
 SOEXPORT int

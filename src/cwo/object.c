@@ -82,6 +82,36 @@ cwo_Object_instance(void)
 }
 
 SOEXPORT int
+cwo_Object_isObject(void *self)
+{
+    cwo_Object *o = self;
+
+    if (!o) return 0;
+    if (strncmp(o->magic, MAGIC, 4)) return 0;
+
+    return 1;
+}
+
+SOEXPORT int
+cwo_Object_isA(void *self, const cwo_Type *type)
+{
+    const cwo_Type *objType;
+    int err;
+
+    if (!cwo_Object_isObject(self)) return 0;
+    err = cwo_Object_typeOf(self, &objType);
+    if (err) return 0;
+
+    while (objType)
+    {
+	if (objType == type) return 1;
+	objType = cwo_Type_getBase(objType);
+    }
+
+    return 0;
+}
+
+SOEXPORT int
 cwo_Object_typeOf(void *self, const cwo_Type **type)
 {
     cwo_Object *o = self;
