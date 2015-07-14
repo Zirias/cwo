@@ -1,7 +1,7 @@
 include src$(PSEP)cwo$(PSEP)internal$(PSEP)internal.mk
-include src$(PSEP)cwo$(PSEP)versions.mk
 
-P:= src$(PSEP)cwo$(PSEP)
+P := src$(PSEP)cwo$(PSEP)
+T := cwo
 
 cwo_OBJS := $(cwo_OBJS) $(P)cwo.o $(P)object.o $(P)type.o $(P)string.o
 cwo_SOURCES := $(cwo_OBJS:.o=.c)
@@ -11,6 +11,5 @@ cwo_DEFINES := -DBUILDING_CWO
 SOURCES += $(cwo_SOURCES)
 CLEAN += $(cwo_SOBJS)
 
-T := cwo
 $(eval $(LIBRULES))
 

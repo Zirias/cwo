@@ -1,9 +1,5 @@
 ifeq ($(OS),Windows_NT)
 
-EXE := .exe
-LIBPRE := lib
-SOPRE :=
-SO := .dll
 CMDSEP := &
 PSEP := \\
 CPF := copy /y
@@ -31,10 +27,6 @@ else
 
 SYSNAME := $(shell uname)
 
-EXE :=
-LIBPRE := lib
-SOPRE := so
-SO := .so
 CMDSEP := ;
 PSEP := /
 CPF := cp -f

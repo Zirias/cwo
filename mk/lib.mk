@@ -1,29 +1,7 @@
-define LIBRULES
-LIBARCHIVES += $$(LIBDIR)$$(PSEP)$$(LIBPRE)$(T).a
-LIBRARIES += $$(SODIR)$$(PSEP)$$(SOPRE)$(T)$$($(T)_VPRE)$$(SO)$$($(T)_VSUFF)
+include mk$(PSEP)platform$(PSEP)$(PLATFORM)$(PSEP)lib.mk
 
-ifneq ($$(PLATFORM),win32)
-$$(LIBDIR)$$(PSEP)$$(LIBPRE)$(T).a: $$($(T)_OBJS) | libdir
-	$$(VAR)
-	$$(VR)$$(AR) rcs $$@ $$^
-endif
+define LIBRULES +=
 
-ifeq ($$(PLATFORM),win32)
-$$(SODIR)$$(PSEP)$$(SOPRE)$(T)$$($(T)_VPRE)$$(SO)$$($(T)_VSUFF): \
-    $$($(T)_SOBJS) | bindir libdir
-	$$(VLD)
-	$$(VR)$$(CC) -shared \
-	    -Wl,--out-implib,$$(LIBDIR)$$(PSEP)$$(LIBPRE)$(T).a \
-	    -Wl,--output-def,$$(LIBDIR)$$(PSEP)$$(SOPRE)$(T).def \
-	    -o$$@ $$(LDFLAGS) $$^
-else
-$$(SODIR)$$(PSEP)$$(SOPRE)$(T)$$($(T)_VPRE)$$(SO)$$($(T)_VSUFF): \
-    $$($(T)_SOBJS) | libdir
-	$$(VLD)
-	$$(VR)$$(CC) -shared \
-	    -Wl,-soname,$$(SOPRE)$(T)$$($(T)_VPRE)$$(SO)$$($(T)_VSS) \
-	    -o$$@ $$(LDFLAGS) $$^
-endif
 
 $(P)%.d: $(P)%.c Makefile conf.mk
 	$$(VDEP)
