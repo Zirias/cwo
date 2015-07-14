@@ -26,5 +26,13 @@
 #endif
 #endif
 
+#if __STDC_VERSION__ > 199901L
+#define FUNCNAME __func__
+#else
+#if defined(_MSC_VER) || defined(__GNUC__)
+#define FUNCNAME __FUNCTION__
+#else
+#define FUNCNAME "<unknown>"
+#endif
 
 #endif
