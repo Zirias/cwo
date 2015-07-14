@@ -3,6 +3,42 @@
 
 #include <cwo/common>
 
+#ifdef CWO_NSIMPORT
+#ifdef ERROR_NOLOCATION
+#define CWO_ERROR_NOLOCATION
+#endif
+#ifdef ERROR_NOBACKTRACE
+#define CWO_ERROR_NOBACKTRACE
+#endif
+#endif
+
+#ifdef CWO_ERROR_NOLOCATION
+#define cwo___EFILE 0
+#define cwo___ELINE 0
+#define cwo___EFUNC 0
+#define cwo___EADDFR(e)
+#else
+#define cwo___EFILE __FILE__
+#define cwo___ELINE __LINE__
+#define cwo___EFUNC FUNCNAME
+#define cwo___EADDFR(e) cwo_Error_addFrame((e), __FILE__, __LINE__, FUNCNAME)
+#endif
+
+#define CWO_ERR_BEGIN(num, msg) do { \
+    cwo_Error *err; \
+    cwo_Error_create(*err, (num), (msg), cwo___EFILE, cwo___ELINE, cwo___EFUNC)
+
+#define CWO_ERR_END return err; } while (0)
+
+#define CWO_ERR(num, msg) CWO_ERR_BEGIN(num, msg); CWO_ERR_END
+
+#define CWO_ERRUP_BEGIN(err) do { \
+    if ((err)) { cwo___EADDFR((err))
+
+#define CWO_ERRUP_END() return err; } } while (0)
+
+#define CWO_ERRUP CWO_ERRUP_BEGIN(); CWO_ERRUP_END
+
 struct cwo_Error_s;
 typedef struct cwo_Error_s cwo_Error;
 
@@ -16,22 +52,6 @@ cwo_Error_addFrame(cwo_Error *self,
 
 DECLEXPORT void
 cwo_Error_destroy(cwo_Error *self);
-
-#define CWO_ERR_BEGIN(num, msg) do { \
-    cwo_Error *err; \
-    cwo_Error_create(*err, (num), (msg), __FILE__, __LINE__, FUNCNAME)
-
-#define CWO_ERR_END return err; } while (0)
-
-#define CWO_ERR(num, msg) CWO_ERR_BEGIN(num, msg); CWO_ERR_END
-
-#define CWO_ERRUP_BEGIN(err) do { \
-    if ((err)) { \
-	cwo_Error_addFrame((err), __FILE__, __LINE__, FUNCNAME)
-
-#define CWO_ERRUP_END() return err; } } while (0)
-
-#define CWO_ERRUP CWO_ERRUP_BEGIN(); CWO_ERRUP_END
 
 #ifdef CWO_NSIMPORT
 #define Error cwo_Error
