@@ -34,5 +34,6 @@
 #else
 #define FUNCNAME "<unknown>"
 #endif
+#endif
 
 #endif
