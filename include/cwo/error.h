@@ -1,7 +1,7 @@
 #ifndef CWO_ERROR_H
 #define CWO_ERROR_H
 
-#include <cwo/common>
+#include <cwo/common.h>
 
 #ifdef CWO_NSIMPORT
 #ifdef ERROR_NOLOCATION
@@ -54,6 +54,12 @@ cwo_Error_create(cwo_Error **self, int num, const char *message,
 DECLEXPORT cwo_Error *
 cwo_Error_addFrame(cwo_Error *self,
 	const char *file, unsigned long *line, const char *func);
+
+DECLEXPORT int
+cwo_Error_getNum(const cwo_Error *self);
+
+DECLEXPORT const char *
+cwo_Error_getMessage(const cwo_Error *self);
 
 DECLEXPORT void
 cwo_Error_destroy(cwo_Error *self);
