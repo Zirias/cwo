@@ -2,7 +2,8 @@ ifeq ($(OS),Windows_NT)
 
 EXE := .exe
 LIBPRE := lib
-LIBSUFF := .dll
+SOPRE :=
+SO := .dll
 CMDSEP := &
 PSEP := \\
 CPF := copy /y
@@ -32,7 +33,8 @@ SYSNAME := $(shell uname)
 
 EXE :=
 LIBPRE := lib
-LIBSUFF := .so
+SOPRE := so
+SO := .so
 CMDSEP := ;
 PSEP := /
 CPF := cp -f

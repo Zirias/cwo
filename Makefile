@@ -52,6 +52,12 @@ CFLAGS += -DDEBUG -g3 -O0
 VTAGS += [debug]
 endif
 
+ifeq ($(PLATFORM),win32)
+SODIR := $(BINDIR)
+else
+SODIR := $(LIBDIR)
+endif
+
 CCDEP := $(CC) -MM
 
 ifeq ($(V),1)
@@ -76,10 +82,10 @@ endif
 
 INCLUDES := -Iinclude
 
-all: lib bin
+all: libs bins
 
 ifneq ($(DEBUG),0)
-all: test
+all: tests
 endif
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -104,11 +110,11 @@ include mk$(PSEP)test.mk
 
 include src$(PSEP)src.mk
 
-bin: $(BINARIES)
+bins: $(BINARIES)
 
-lib: $(LIBRARIES) $(LIBARCHIVES)
+libs: $(LIBRARIES) $(LIBARCHIVES)
 
-test: $(TESTS)
+tests: $(TESTS)
 
 clean:
 	$(RMF) $(SOURCES:.c=.o)
@@ -155,22 +161,22 @@ ifneq ($(strip $(LIBRARIES)),)
 endif
 endif
 
-$(BINDIR)$(PSEP):
+$(BINDIR):
 	$(VR)$(MDP) $(BINDIR) $(CMDQUIET)
 
-$(LIBDIR)$(PSEP):
+$(LIBDIR):
 	$(VR)$(MDP) $(LIBDIR) $(CMDQUIET)
 
-$(TESTDIR)$(PSEP):
+$(TESTDIR):
 	$(VR)$(MDP) $(TESTDIR) $(CMDQUIET)
 
-bindir: $(BINDIR)$(PSEP)
+bindir: $(BINDIR)
 
-libdir: $(LIBDIR)$(PSEP)
+libdir: $(LIBDIR)
 
-testdir: $(TESTDIR)$(PSEP)
+testdir: $(TESTDIR)
 
-.PHONY: all bin lib test bindir libdir testdir strip clean distclean install
+.PHONY: all bins libs tests bindir libdir testdir strip clean distclean install
 .SUFFIXES:
 
 # vim: noet:si:ts=8:sts=8:sw=8
