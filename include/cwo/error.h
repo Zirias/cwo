@@ -16,12 +16,17 @@
 #define cwo___EFILE 0
 #define cwo___ELINE 0
 #define cwo___EFUNC 0
-#define cwo___EADDFR(e)
 #else
 #define cwo___EFILE __FILE__
 #define cwo___ELINE __LINE__
 #define cwo___EFUNC FUNCNAME
-#define cwo___EADDFR(e) cwo_Error_addFrame((e), __FILE__, __LINE__, FUNCNAME)
+#endif
+
+#ifdef CWO_ERROR_NOBACKTRACE
+#define cwo___EADDFR(e)
+#else
+#define cwo___EADDFR(e) cwo_Error_addFrame((e), \
+	cwo___EFILE, cwo___ELINE, cwo___EFUNC)
 #endif
 
 #define CWO_ERR_BEGIN(num, msg) do { \
